@@ -30,4 +30,15 @@ describe('PixelButton Component', () => {
 
         expect(button).toHaveClass('blink');
     });
+
+    it('adds pop-effect class when variant is success or danger', () => {
+        const { rerender } = render(<PixelButton variant="success">Pop</PixelButton>);
+        expect(screen.getByText('Pop')).toHaveClass('pop-effect');
+
+        rerender(<PixelButton variant="danger">Pop</PixelButton>);
+        expect(screen.getByText('Pop')).toHaveClass('pop-effect');
+
+        rerender(<PixelButton variant="primary">Pop</PixelButton>);
+        expect(screen.getByText('Pop')).not.toHaveClass('pop-effect');
+    });
 });

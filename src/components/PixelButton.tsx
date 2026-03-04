@@ -24,7 +24,7 @@ export const PixelButton: React.FC<PixelButtonProps> = ({
 
   return (
     <button
-      className={`pixel-button ${isBlinking ? 'blink' : ''} ${className}`}
+      className={`pixel-button ${isBlinking ? 'blink' : ''} ${variant === 'success' || variant === 'danger' ? 'pop-effect' : ''} ${className}`}
       style={{ backgroundColor: getVariantColor() }}
       {...props}
     >

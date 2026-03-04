@@ -221,6 +221,25 @@ button {
 }
 
 /* Staggered Reveals */
+/* Response Feedback */
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pop-effect {
+  animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
 .stagger-1 {
   animation: slideUp 0.5s ease forwards 0.1s;
   opacity: 0;
