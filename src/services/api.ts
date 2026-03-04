@@ -133,7 +133,7 @@ const mockQuizPool: Question[] = [
 
 // Mock data generator for fallback
 const getMockQuestions = (count: number): Question[] => {
-    // Return random selection from the pool
+    // eslint-disable-next-line sonarjs/pseudo-random
     const shuffled = [...mockQuizPool].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
 };
