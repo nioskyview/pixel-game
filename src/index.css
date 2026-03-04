@@ -16,11 +16,11 @@
   /* Fonts */
   --font-heading: 'Press Start 2P', monospace;
   --font-body: 'DotGothic16', monospace;
-  
+
   /* Textura & Effects */
   --crt-scanline: rgba(0, 0, 0, 0.15);
   --text-shadow-rgb: 2px 0px 0px rgba(255, 0, 0, 0.5), -2px 0px 0px rgba(0, 255, 255, 0.5);
-  --pixel-shadow: 
+  --pixel-shadow:
     -4px 0 0 0 var(--border-color),
     4px 0 0 0 var(--border-color),
     0 -4px 0 0 var(--border-color),
@@ -41,15 +41,18 @@ body {
   -webkit-font-smoothing: none;
   font-size: 18px;
   /* Simple scanline background fallback */
-  background-image: linear-gradient(
-    transparent 50%,
-    rgba(0, 0, 0, 0.25) 50%
-  );
+  background-image: linear-gradient(transparent 50%,
+      rgba(0, 0, 0, 0.25) 50%);
   background-size: 100% 4px;
 }
 
 /* Typography Hierarchy */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -59,8 +62,13 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; }
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
 
 /* CRT Global Overlay Wrapper */
 .crt-overlay {
@@ -70,8 +78,9 @@ h2 { font-size: 1.5rem; }
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  pointer-events: none; /* Let clicks pass through */
-  background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.5) 100%);
+  pointer-events: none;
+  /* Let clicks pass through */
+  background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
   animation: flicker 0.15s infinite;
   opacity: 0.8;
 }
@@ -99,8 +108,16 @@ button {
    Animations
    ---------------------- */
 @keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .blink {
@@ -108,18 +125,43 @@ button {
 }
 
 @keyframes flicker {
-  0% { opacity: 0.95; }
-  50% { opacity: 0.85; }
-  100% { opacity: 0.95; }
+  0% {
+    opacity: 0.95;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+
+  100% {
+    opacity: 0.95;
+  }
 }
 
 @keyframes glitch-anim {
-  0% { transform: translate(0) }
-  20% { transform: translate(-5px, 2px) }
-  40% { transform: translate(5px, -2px) }
-  60% { transform: translate(-5px, 2px) }
-  80% { transform: translate(5px, -2px) }
-  100% { transform: translate(0) }
+  0% {
+    transform: translate(0)
+  }
+
+  20% {
+    transform: translate(-5px, 2px)
+  }
+
+  40% {
+    transform: translate(5px, -2px)
+  }
+
+  60% {
+    transform: translate(-5px, 2px)
+  }
+
+  80% {
+    transform: translate(5px, -2px)
+  }
+
+  100% {
+    transform: translate(0)
+  }
 }
 
 .glitch {
@@ -128,10 +170,74 @@ button {
   text-shadow: 2px 0 blue, -2px 0 red;
 }
 
+/* Response Feedback */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+.shake-effect {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes flash-success {
+  0% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: rgba(57, 255, 20, 0.2);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash-success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  animation: flash-success 0.5s ease-out forwards;
+}
+
 /* Staggered Reveals */
-.stagger-1 { animation: slideUp 0.5s ease forwards 0.1s; opacity: 0; transform: translateY(20px); }
-.stagger-2 { animation: slideUp 0.5s ease forwards 0.2s; opacity: 0; transform: translateY(20px); }
-.stagger-3 { animation: slideUp 0.5s ease forwards 0.3s; opacity: 0; transform: translateY(20px); }
+.stagger-1 {
+  animation: slideUp 0.5s ease forwards 0.1s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-2 {
+  animation: slideUp 0.5s ease forwards 0.2s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-3 {
+  animation: slideUp 0.5s ease forwards 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+}
 
 @keyframes slideUp {
   to {
@@ -149,14 +255,16 @@ button {
   text-transform: uppercase;
   color: #fff;
   background-color: var(--primary-color);
-  box-shadow: 
+  box-shadow:
     -4px 0 0 0 var(--border-color),
     4px 0 0 0 var(--border-color),
     0 -4px 0 0 var(--border-color),
     0 4px 0 0 var(--border-color),
-    0 8px 0 0vw #000; /* Deep shadow for 3D effect */
+    0 8px 0 0vw #000;
+  /* Deep shadow for 3D effect */
   margin: 10px;
-  margin-bottom: 18px; /* Room for shadow */
+  margin-bottom: 18px;
+  /* Room for shadow */
   transition: all 0.05s ease;
   position: relative;
 }
@@ -167,12 +275,13 @@ button {
 
 .pixel-button:active {
   transform: translateY(4px);
-  box-shadow: 
+  box-shadow:
     -4px 0 0 0 var(--border-color),
     4px 0 0 0 var(--border-color),
     0 -4px 0 0 var(--border-color),
     0 4px 0 0 var(--border-color),
-    0 4px 0 0vw #000; /* Shadow shrinks as button pushes down */
+    0 4px 0 0vw #000;
+  /* Shadow shrinks as button pushes down */
 }
 
 .pixel-button:disabled {
@@ -180,7 +289,7 @@ button {
   color: #aaa;
   cursor: not-allowed;
   transform: translateY(8px);
-  box-shadow: 
+  box-shadow:
     -4px 0 0 0 var(--border-color),
     4px 0 0 0 var(--border-color),
     0 -4px 0 0 var(--border-color),
