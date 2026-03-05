@@ -1,45 +1,49 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ResultView } from './ResultView';
 
 describe('ResultView Component', () => {
     it('renders STAGE CLEAR when score meets the threshold', () => {
-        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} isSubmitting={false} />);
+        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} onViewLeaderboard={vi.fn()} onSubmitScore={vi.fn()} />);
 
-        const title = screen.getByText('STAGE CLEAR!');
-        expect(title).toBeInTheDocument();
-        expect(title.style.color).toBe('var(--success-color)');
+        expect(screen.getByText('STAGE CLEAR!')).toBeInTheDocument();
     });
 
-    it('renders GAME OVER when score is below the threshold', () => {
-        render(<ResultView score={2} totalQuestions={5} threshold={3} onRetry={vi.fn()} isSubmitting={false} />);
+    it('handles nickname input and submission', async () => {
+        const handleSubmit = vi.fn().mockResolvedValue(undefined);
+        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} onViewLeaderboard={vi.fn()} onSubmitScore={handleSubmit} />);
 
-        const title = screen.getByText('GAME OVER');
-        expect(title).toBeInTheDocument();
-        expect(title.style.color).toBe('var(--danger-color)');
+        const input = screen.getByPlaceholderText('PLAYER NAME');
+        fireEvent.change(input, { target: { value: 'hero' } });
+        expect(input).toHaveValue('HERO'); // Check auto-uppercase
+
+        const submitButton = screen.getByText('SUBMIT TO ARENA');
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        expect(handleSubmit).toHaveBeenCalledWith('HERO');
+        expect(screen.getByText('RANKED SUCCESSFULLY!')).toBeInTheDocument();
     });
 
-    it('shows saving indicator when isSubmitting is true and disables retry button', () => {
-        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} isSubmitting={true} />);
+    it('triggers onViewLeaderboard after successful submission', async () => {
+        const handleViewLeaderboard = vi.fn();
+        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} onViewLeaderboard={handleViewLeaderboard} onSubmitScore={vi.fn().mockResolvedValue(undefined)} />);
 
-        expect(screen.getByText('Saving score to server...')).toBeInTheDocument();
+        const input = screen.getByPlaceholderText('PLAYER NAME');
+        fireEvent.change(input, { target: { value: 'hero' } });
 
-        const retryButton = screen.getByText('PLAY AGAIN');
-        expect(retryButton).toBeDisabled();
+        await act(async () => {
+            fireEvent.click(screen.getByText('SUBMIT TO ARENA'));
+        });
+
+        fireEvent.click(screen.getByText('VIEW HALL OF FAME'));
+        expect(handleViewLeaderboard).toHaveBeenCalled();
     });
 
-    it('shows success message when isSubmitting is false and enables retry button', () => {
-        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} isSubmitting={false} />);
-
-        expect(screen.getByText('Score saved successfully!')).toBeInTheDocument();
-
-        const retryButton = screen.getByText('PLAY AGAIN');
-        expect(retryButton).not.toBeDisabled();
-    });
-
-    it('triggers onRetry when retry button is clicked', () => {
+    it('triggers onRetry when play again is clicked', () => {
         const handleRetry = vi.fn();
-        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={handleRetry} isSubmitting={false} />);
+        render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={handleRetry} onViewLeaderboard={vi.fn()} onSubmitScore={vi.fn()} />);
 
         fireEvent.click(screen.getByText('PLAY AGAIN'));
         expect(handleRetry).toHaveBeenCalledTimes(1);

@@ -3,16 +3,16 @@ import { fetchQuestions, submitScore, Question } from './services/api';
 import { LoginView } from './views/LoginView';
 import { GameView } from './views/GameView';
 import { ResultView } from './views/ResultView';
+import { LeaderboardView } from './views/LeaderboardView';
 import './App.css';
 
-type ViewState = 'login' | 'loading' | 'game' | 'result';
+type ViewState = 'login' | 'loading' | 'game' | 'result' | 'leaderboard';
 
 function App() {
   const [view, setView] = useState<ViewState>('login');
   const [playerId, setPlayerId] = useState<string>('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [score, setScore] = useState<number>(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const threshold = parseInt(import.meta.env.VITE_PASS_THRESHOLD || '3');
   const questionCount = parseInt(import.meta.env.VITE_QUESTION_COUNT || '5');
@@ -20,26 +20,23 @@ function App() {
   const handleLogin = async (id: string) => {
     setPlayerId(id);
     setView('loading');
-
-    // Fetch questions from GAS
     const data = await fetchQuestions(questionCount);
     setQuestions(data);
     setView('game');
   };
 
-  const handleGameEnd = async (finalScore: number) => {
+  const handleGameEnd = (finalScore: number) => {
     setScore(finalScore);
     setView('result');
-    setIsSubmitting(true);
+  };
 
-    // Submit score to GAS
+  const handleSubmitScore = async (name: string) => {
     await submitScore({
       id: playerId,
-      score: finalScore,
+      playerName: name,
+      score: score,
       timestamp: new Date().toISOString()
     });
-
-    setIsSubmitting(false);
   };
 
   const handleRetry = () => {
@@ -53,12 +50,25 @@ function App() {
       <div className="crt-overlay"></div>
       <div className="app-wrapper">
         <div className="app-container">
-          {view === 'login' && <LoginView onLogin={handleLogin} />}
+          {view === 'login' && (
+            <div className="login-wrapper">
+              <LoginView onLogin={handleLogin} />
+              <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                <a
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); setView('leaderboard'); }}
+                  style={{ color: 'var(--secondary-color)', fontSize: '0.8rem', textDecoration: 'none' }}
+                  className="blink"
+                >
+                  VIEW GLOBAL RANKING
+                </a>
+              </div>
+            </div>
+          )}
 
           {view === 'loading' && (
             <div className="loading-view stagger-1" style={{ textAlign: 'center' }}>
               <h2 className="blink" style={{ color: 'var(--secondary-color)' }}>LOADING...</h2>
-              <p>FETCHING DATA FROM SERVER</p>
             </div>
           )}
 
@@ -72,8 +82,13 @@ function App() {
               totalQuestions={questions.length}
               threshold={threshold}
               onRetry={handleRetry}
-              isSubmitting={isSubmitting}
+              onViewLeaderboard={() => setView('leaderboard')}
+              onSubmitScore={handleSubmitScore}
             />
+          )}
+
+          {view === 'leaderboard' && (
+            <LeaderboardView onBack={() => setView('login')} />
           )}
         </div>
       </div>

@@ -3,12 +3,14 @@ import React from 'react';
 interface PixelContainerProps {
     children: React.ReactNode;
     className?: string;
+    style?: React.CSSProperties;
     title?: string;
 }
 
 export const PixelContainer: React.FC<PixelContainerProps> = ({
     children,
     className = '',
+    style = {},
     title
 }) => {
     const containerStyle = {
@@ -18,6 +20,7 @@ export const PixelContainer: React.FC<PixelContainerProps> = ({
         margin: '16px',
         position: 'relative' as const,
         width: '100%',
+        ...style
     };
 
     const titleStyle = {
