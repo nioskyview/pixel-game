@@ -2,6 +2,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { PixelButton } from './PixelButton';
 
+vi.mock('../contexts/AudioContext', () => ({
+    useAudio: () => ({
+        playHover: vi.fn(),
+        playClick: vi.fn(),
+    })
+}));
+
 describe('PixelButton Component', () => {
     it('renders children correctly', () => {
         render(<PixelButton>Click Me!</PixelButton>);

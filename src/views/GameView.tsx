@@ -4,6 +4,7 @@ import { PixelButton } from '../components/PixelButton';
 import { Avatar } from '../components/Avatar';
 import { PixelParticles } from '../components/PixelParticles';
 import { Question } from '../services/api';
+import { useAudio } from '../contexts/AudioContext';
 
 interface GameViewProps {
     questions: Question[];
@@ -18,6 +19,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
     const [showFlash, setShowFlash] = useState(false);
     const [particlePos, setParticlePos] = useState<{ x: number, y: number } | null>(null);
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const { playCorrect, playWrong } = useAudio();
 
     // eslint-disable-next-line security/detect-object-injection
     const currentQuestion = questions[currentIndex];
@@ -44,9 +46,12 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
 
         const isCorrect = key === currentQuestion.answer;
         if (isCorrect) {
+            playCorrect();
             setScore(prev => prev + 1);
             setShowFlash(true);
             setTimeout(() => setShowFlash(false), 500);
+        } else {
+            playWrong();
         }
 
         // Trigger particles

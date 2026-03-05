@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAudio } from '../contexts/AudioContext';
 
 interface PixelButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'success';
@@ -11,8 +12,12 @@ export const PixelButton: React.FC<PixelButtonProps> = ({
   variant = 'primary',
   className = '',
   isBlinking = false,
+  onMouseEnter,
+  onClick,
   ...props
 }) => {
+  const { playHover, playClick } = useAudio();
+
   const getVariantColor = () => {
     switch (variant) {
       case 'secondary': return 'var(--secondary-color)';
@@ -26,6 +31,14 @@ export const PixelButton: React.FC<PixelButtonProps> = ({
     <button
       className={`pixel-button ${isBlinking ? 'blink' : ''} ${variant === 'success' || variant === 'danger' ? 'pop-effect' : ''} ${className}`}
       style={{ backgroundColor: getVariantColor() }}
+      onMouseEnter={(e) => {
+        playHover();
+        if (onMouseEnter) onMouseEnter(e);
+      }}
+      onClick={(e) => {
+        playClick();
+        if (onClick) onClick(e);
+      }}
       {...props}
     >
       {children}

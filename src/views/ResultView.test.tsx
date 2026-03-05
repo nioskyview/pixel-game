@@ -2,6 +2,14 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ResultView } from './ResultView';
 
+vi.mock('../contexts/AudioContext', () => ({
+    useAudio: () => ({
+        playGameOver: vi.fn(),
+        playHover: vi.fn(),
+        playClick: vi.fn(),
+    })
+}));
+
 describe('ResultView Component', () => {
     it('renders STAGE CLEAR when score meets the threshold', () => {
         render(<ResultView score={3} totalQuestions={5} threshold={3} onRetry={vi.fn()} onViewLeaderboard={vi.fn()} onSubmitScore={vi.fn()} />);

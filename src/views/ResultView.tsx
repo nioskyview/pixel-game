@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PixelContainer } from '../components/PixelContainer';
 import { PixelButton } from '../components/PixelButton';
+import { useAudio } from '../contexts/AudioContext';
 
 interface ResultViewProps {
     score: number;
@@ -23,6 +24,11 @@ export const ResultView: React.FC<ResultViewProps> = ({
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const isPass = score >= threshold;
+    const { playGameOver } = useAudio();
+
+    useEffect(() => {
+        playGameOver();
+    }, [playGameOver]);
 
     const handleSubmit = async () => {
         if (!name.trim()) return;
