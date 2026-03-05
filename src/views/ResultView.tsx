@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PixelContainer } from '../components/PixelContainer';
 import { PixelButton } from '../components/PixelButton';
 
@@ -7,7 +7,8 @@ interface ResultViewProps {
     totalQuestions: number;
     threshold: number;
     onRetry: () => void;
-    isSubmitting: boolean;
+    onViewLeaderboard: () => void;
+    onSubmitScore: (name: string) => Promise<void>;
 }
 
 export const ResultView: React.FC<ResultViewProps> = ({
@@ -15,9 +16,21 @@ export const ResultView: React.FC<ResultViewProps> = ({
     totalQuestions,
     threshold,
     onRetry,
-    isSubmitting
+    onViewLeaderboard,
+    onSubmitScore
 }) => {
+    const [name, setName] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const isPass = score >= threshold;
+
+    const handleSubmit = async () => {
+        if (!name.trim()) return;
+        setIsSubmitting(true);
+        await onSubmitScore(name);
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+    };
 
     return (
         <div className="result-view" style={{ textAlign: 'center' }}>
@@ -31,22 +44,53 @@ export const ResultView: React.FC<ResultViewProps> = ({
 
             <PixelContainer title="RESULTS" className="stagger-2">
                 <div style={{ fontSize: '1.2rem', margin: '20px 0', lineHeight: 2 }}>
-                    <p>QUESTIONS: {totalQuestions}</p>
-                    <p>SCORE: <span style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>{score}</span></p>
-                    <p>REQUIRED: {threshold}</p>
+                    <p>SCORE: <span style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>{score}/{totalQuestions}</span></p>
 
-                    <div style={{ marginTop: '20px', borderTop: '2px dashed var(--border-color)', paddingTop: '20px' }}>
-                        {isSubmitting ? (
-                            <p className="blink" style={{ color: 'var(--primary-hover)' }}>Saving score to server...</p>
-                        ) : (
-                            <p style={{ color: 'var(--success-color)' }}>Score saved successfully!</p>
-                        )}
-                    </div>
+                    {!isSubmitted ? (
+                        <div style={{ marginTop: '20px', borderTop: '2px dashed var(--border-color)', paddingTop: '20px' }}>
+                            <p style={{ fontSize: '0.9rem', marginBottom: '10px' }}>ENTER YOUR NICKNAME:</p>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 12))}
+                                placeholder="PLAYER NAME"
+                                style={{
+                                    width: '80%',
+                                    padding: '10px',
+                                    backgroundColor: '#000',
+                                    color: 'var(--primary-color)',
+                                    border: '2px solid var(--border-color)',
+                                    fontFamily: 'var(--font-heading)',
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    outline: 'none'
+                                }}
+                            />
+                            <PixelButton
+                                onClick={handleSubmit}
+                                disabled={!name.trim() || isSubmitting}
+                                variant="success"
+                                style={{ width: '100%', marginTop: '1rem' }}
+                            >
+                                {isSubmitting ? 'SAVING...' : 'SUBMIT TO ARENA'}
+                            </PixelButton>
+                        </div>
+                    ) : (
+                        <div style={{ marginTop: '20px', borderTop: '2px dashed var(--border-color)', paddingTop: '20px' }}>
+                            <p style={{ color: 'var(--success-color)' }}>RANKED SUCCESSFULLY!</p>
+                            <PixelButton
+                                onClick={onViewLeaderboard}
+                                variant="primary"
+                                style={{ width: '100%', marginTop: '0.5rem' }}
+                            >
+                                VIEW HALL OF FAME
+                            </PixelButton>
+                        </div>
+                    )}
                 </div>
 
                 <PixelButton
                     onClick={onRetry}
-                    disabled={isSubmitting}
                     style={{ width: '100%', marginTop: '1rem' }}
                 >
                     PLAY AGAIN
