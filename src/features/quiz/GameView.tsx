@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { PixelContainer } from '../shared/components/PixelContainer';
-import { PixelButton } from '../shared/components/PixelButton';
-import { Avatar } from '../shared/components/Avatar';
-import { PixelParticles } from '../shared/components/PixelParticles';
-import { Question } from '../shared/services/api';
-import { useAudio } from '../shared/contexts/AudioContext';
+import { PixelContainer } from '../../shared/components/PixelContainer';
+import { PixelButton } from '../../shared/components/PixelButton';
+import { Avatar } from '../../shared/components/Avatar';
+import { PixelParticles } from '../../shared/components/PixelParticles';
+import { Question } from '../../shared/services/api';
+import { useAudio } from '../../shared/contexts/AudioContext';
 
-import { checkAnswer } from '../domain/quiz/quizDomain';
+import { checkAnswer } from '../../domain/quiz/quizDomain';
 
 interface GameViewProps {
     questions: Question[];

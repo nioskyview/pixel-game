@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local-Only Documentation & Workflow
+docs/
+.agents/
+.agent/
+_agents/
+_agent/
+brain/
