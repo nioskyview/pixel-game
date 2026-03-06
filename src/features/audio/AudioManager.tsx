@@ -25,7 +25,7 @@ const sfxGameOver = new Howl({ src: [silentWav], volume: 0.5 });
 // BGM: looping track
 // For BGM, a base64 would be too large. We'll try to load from public/audio/bgm.mp3 if it exists, otherwise fallback to silent.
 const bgm = new Howl({
-    src: ['/audio/bgm.mp3'], // Assuming we will place a file here, or we just handle load error gracefully
+    src: ['audio/bgm.mp3'], // Use relative path for subpath support
     loop: true,
     volume: 0.3,
     onloaderror: () => {
