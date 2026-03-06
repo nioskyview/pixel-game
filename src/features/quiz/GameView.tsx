@@ -3,6 +3,7 @@ import { PixelContainer } from '../../shared/components/PixelContainer';
 import { PixelButton } from '../../shared/components/PixelButton';
 import { Avatar } from '../../shared/components/Avatar';
 import { PixelParticles } from '../../shared/components/PixelParticles';
+import { PixelMaiden, EmotionState } from '../../shared/components/PixelMaiden';
 import { Question } from '../ranking/RankingManager';
 import { useAudio } from '../audio/AudioManager';
 
@@ -19,6 +20,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isAnimating, setIsAnimating] = useState(false);
     const [showFlash, setShowFlash] = useState(false);
+    const [maidenEmotion, setMaidenEmotion] = useState<EmotionState>('neutral');
     const [particlePos, setParticlePos] = useState<{ x: number, y: number } | null>(null);
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const { playCorrect, playWrong } = useAudio();
@@ -51,9 +53,11 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
             playCorrect();
             setScore(prev => prev + 1);
             setShowFlash(true);
+            setMaidenEmotion('happy');
             setTimeout(() => setShowFlash(false), 500);
         } else {
             playWrong();
+            setMaidenEmotion('sad');
         }
 
         // Trigger particles
@@ -76,6 +80,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
         timeoutRef.current = setTimeout(() => {
             setSelectedAnswer(null);
             setIsAnimating(false);
+            setMaidenEmotion('neutral');
             setCurrentIndex(prev => prev + 1);
             timeoutRef.current = null;
         }, 1200);
@@ -110,9 +115,35 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
                     onComplete={() => setParticlePos(null)}
                 />
             )}
-            <div className="stagger-1" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.2rem', color: 'var(--secondary-color)' }}>
-                <span>STAGE {currentIndex + 1}/{questions.length}</span>
-                <span>SCORE: {score}</span>
+
+            <div className="game-header stagger-1" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '20px',
+                marginBottom: '1rem'
+            }}>
+                <PixelMaiden emotion={maidenEmotion} />
+                <div style={{ flex: 1, fontSize: '1.2rem', color: 'var(--secondary-color)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span>STAGE {currentIndex + 1}/{questions.length}</span>
+                        <span>SCORE: {score}</span>
+                    </div>
+                    {/* Progress Bar background */}
+                    <div style={{
+                        height: '8px',
+                        backgroundColor: '#111',
+                        marginTop: '8px',
+                        border: '1px solid var(--border-color)',
+                        boxShadow: 'var(--cyan-glow)'
+                    }}>
+                        <div style={{
+                            height: '100%',
+                            width: `${(currentIndex / questions.length) * 100}%`,
+                            backgroundColor: 'var(--secondary-color)',
+                            transition: 'width 0.3s ease'
+                        }} />
+                    </div>
+                </div>
             </div>
 
             <PixelContainer title="BOSS ENCOUNTER" className="stagger-2">

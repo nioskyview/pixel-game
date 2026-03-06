@@ -1,25 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap');
 
 :root {
-  /* Color Palette (Deep Arcade) */
-  --bg-color: #0d0e15;
-  --text-color: #e0e0e0;
-  --primary-color: #fca311;
-  --primary-hover: #e89510;
-  --secondary-color: #00ffcc;
-  --danger-color: #ff3366;
-  --danger-hover: #e62e5c;
-  --success-color: #39ff14;
-  --card-bg: #161824;
-  --border-color: #4a4e69;
+  /* Color Palette (Deep Arcade & Neon) */
+  --bg-color: #050508;
+  --text-color: #f0f0f0;
+  --primary-color: #ff00ff;
+  /* Neon Magenta */
+  --primary-hover: #cc00cc;
+  --secondary-color: #00f3ff;
+  /* Electric Cyan */
+  --secondary-hover: #00c6d1;
+  --danger-color: #ff0055;
+  --danger-hover: #d40047;
+  --success-color: #00ff66;
+  --warning-color: #ffff00;
+  --card-bg: rgba(22, 24, 36, 0.85);
+  --border-color: #333652;
+  --neon-glow: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.3);
+  --cyan-glow: 0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.3);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(12px);
 
   /* Fonts */
   --font-heading: 'Press Start 2P', monospace;
   --font-body: 'DotGothic16', monospace;
+  --font-ui: 'Inter', -apple-system, sans-serif;
 
   /* Textura & Effects */
-  --crt-scanline: rgba(0, 0, 0, 0.15);
-  --text-shadow-rgb: 2px 0px 0px rgba(255, 0, 0, 0.5), -2px 0px 0px rgba(0, 255, 255, 0.5);
+  --crt-scanline: rgba(0, 0, 0, 0.1);
+  --text-shadow-neon: 0 0 5px var(--primary-color), 2px 2px 0px #000;
   --pixel-shadow:
     -4px 0 0 0 var(--border-color),
     4px 0 0 0 var(--border-color),
@@ -55,19 +67,57 @@ h5,
 h6 {
   font-family: var(--font-heading);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   line-height: 1.4;
-  margin-bottom: 1.5rem;
-  text-shadow: var(--text-shadow-rgb);
+  margin-bottom: 2rem;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), var(--text-shadow-neon);
   text-align: center;
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
+  background: linear-gradient(to bottom, #fff 50%, #ccc 50%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px var(--primary-color));
+}
+
+.glass-edge-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right,
+      transparent,
+      rgba(0, 243, 255, 0.4),
+      transparent);
+  transform: skewX(-25deg);
+  animation: shine 4s infinite linear;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+
+  20% {
+    left: 200%;
+  }
+
+  100% {
+    left: 200%;
+  }
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  color: var(--secondary-color);
+  text-shadow: var(--cyan-glow);
 }
 
 /* CRT Global Overlay Wrapper */
@@ -79,10 +129,57 @@ h2 {
   height: 100vh;
   z-index: 9999;
   pointer-events: none;
-  /* Let clicks pass through */
-  background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
-  animation: flicker 0.15s infinite;
-  opacity: 0.8;
+  background: rgba(18, 16, 16, 0);
+  background: radial-gradient(circle, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 100%);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+}
+
+.crt-overlay::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(18, 16, 16, 0.1);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: flicker 0.1s infinite;
+}
+
+.crt-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Neon Glow Utilities */
+.neon-text-primary {
+  text-shadow: var(--neon-glow);
+  color: #fff;
+}
+
+.neon-text-secondary {
+  text-shadow: var(--cyan-glow);
+  color: #fff;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
 /* Generic Layout Wrapper */

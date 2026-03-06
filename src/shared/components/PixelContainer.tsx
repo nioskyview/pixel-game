@@ -1,43 +1,59 @@
 import React from 'react';
 
 interface PixelContainerProps {
+    title?: string;
     children: React.ReactNode;
     className?: string;
-    style?: React.CSSProperties;
-    title?: string;
+    variant?: 'default' | 'glass';
 }
 
 export const PixelContainer: React.FC<PixelContainerProps> = ({
+    title,
     children,
-    className = '',
-    style = {},
-    title
+    className = "",
+    variant = 'default'
 }) => {
-    const containerStyle = {
-        backgroundColor: 'var(--card-bg)',
-        boxShadow: 'var(--pixel-shadow), inset 0 0 0 4px var(--bg-color), inset 0 0 0 8px var(--border-color)',
-        padding: '32px 24px 24px 24px',
-        margin: '16px',
-        position: 'relative' as const,
-        width: '100%',
-        ...style
-    };
-
-    const titleStyle = {
-        position: 'absolute' as const,
-        top: '-15px',
-        left: '20px',
-        backgroundColor: 'var(--bg-color)',
-        boxShadow: 'var(--pixel-shadow)',
-        padding: '2px 12px',
-        color: 'var(--secondary-color)',
-        fontSize: '0.8rem',
-    };
+    const isGlass = variant === 'glass';
 
     return (
-        <div className={`pixel-container ${className}`} style={containerStyle}>
-            {title && <div style={titleStyle}>{title}</div>}
-            {children}
+        <div className={`pixel-container ${isGlass ? 'glass-panel' : ''} ${className}`} style={{
+            padding: '20px',
+            position: 'relative',
+            width: '100%',
+            maxWidth: '600px',
+            margin: '0 auto',
+            ...(isGlass ? {
+                border: 'none',
+                boxShadow: '0 0 20px rgba(0, 243, 255, 0.2)',
+                borderRadius: '8px',
+                overflow: 'hidden'
+            } : {
+                boxShadow: 'var(--pixel-shadow)',
+                backgroundColor: 'var(--card-bg)',
+                border: '2px solid var(--border-color)',
+            })
+        }}>
+            {isGlass && <div className="glass-edge-glow"></div>}
+            {title && (
+                <div style={{
+                    position: 'absolute',
+                    top: '-15px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: isGlass ? 'transparent' : 'var(--bg-color)',
+                    padding: '0 15px',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.9rem',
+                    color: isGlass ? 'var(--secondary-color)' : 'var(--primary-color)',
+                    zIndex: 2,
+                    textShadow: isGlass ? 'var(--cyan-glow)' : 'none'
+                }}>
+                    {title}
+                </div>
+            )}
+            <div className="container-content" style={{ position: 'relative', zIndex: 1 }}>
+                {children}
+            </div>
         </div>
     );
 };
