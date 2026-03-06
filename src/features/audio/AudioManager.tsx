@@ -108,7 +108,6 @@ export const useAudio = () => {
     return context;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AudioToggle: React.FC = () => {
     const { muted, toggleMute } = useAudio();
 
