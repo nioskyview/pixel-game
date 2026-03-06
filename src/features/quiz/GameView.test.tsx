@@ -37,7 +37,8 @@ describe('GameView Component', () => {
         render(<GameView questions={mockQuestions} onGameEnd={vi.fn()} />);
 
         expect(screen.getByText(/What is 1 \+ 1\?/i)).toBeInTheDocument();
-        expect(screen.getByText(/2/)).toBeInTheDocument();
+        // The button text is "B. 2"
+        expect(screen.getByText(/B\. 2/i)).toBeInTheDocument();
     });
 
     it('handles correct answer and advances', async () => {
@@ -45,7 +46,7 @@ describe('GameView Component', () => {
         const handleGameEnd = vi.fn();
         render(<GameView questions={mockQuestions} onGameEnd={handleGameEnd} />);
 
-        const optionB = screen.getByText(/2/);
+        const optionB = screen.getByText(/B\. 2/i);
         fireEvent.click(optionB);
 
         // Wait for potential delays/stagger (1200ms in component)
@@ -62,14 +63,14 @@ describe('GameView Component', () => {
         const handleGameEnd = vi.fn();
         render(<GameView questions={mockQuestions} onGameEnd={handleGameEnd} />);
 
-        // Q1
-        fireEvent.click(screen.getByText(/2/));
+        // Q1: B. 2
+        fireEvent.click(screen.getByText(/B\. 2/i));
         await act(async () => {
             vi.advanceTimersByTime(1500);
         });
 
-        // Q2
-        fireEvent.click(screen.getByText(/4/));
+        // Q2: A. 4
+        fireEvent.click(screen.getByText(/A\. 4/i));
         await act(async () => {
             vi.advanceTimersByTime(1500);
         });
