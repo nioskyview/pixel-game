@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PixelContainer } from '../shared/components/PixelContainer';
 import { PixelButton } from '../shared/components/PixelButton';
 import { useAudio } from '../shared/contexts/AudioContext';
+import { getQuizSummary } from '../domain/quiz/quizDomain';
 
 interface ResultViewProps {
     score: number;
@@ -14,7 +15,7 @@ interface ResultViewProps {
 
 export const ResultView: React.FC<ResultViewProps> = ({
     score,
-    totalQuestions,
+    totalQuestions: total,
     threshold,
     onRetry,
     onViewLeaderboard,
@@ -23,12 +24,16 @@ export const ResultView: React.FC<ResultViewProps> = ({
     const [name, setName] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const isPass = score >= threshold;
-    const { playGameOver } = useAudio();
+    const { playGameOver, playCorrect } = useAudio();
+    const { isPass, percentage, message } = getQuizSummary({ score, total, threshold });
 
     useEffect(() => {
-        playGameOver();
-    }, [playGameOver]);
+        if (isPass) {
+            playCorrect();
+        } else {
+            playGameOver();
+        }
+    }, [isPass, playGameOver, playCorrect]);
 
     const handleSubmit = async () => {
         if (!name.trim()) return;
@@ -40,17 +45,18 @@ export const ResultView: React.FC<ResultViewProps> = ({
 
     return (
         <div className="result-view" style={{ textAlign: 'center' }}>
-            <h2 className="stagger-1" style={{
+            <h1 className="stagger-1" style={{
                 color: isPass ? 'var(--success-color)' : 'var(--danger-color)',
-                fontSize: '2.5rem',
+                fontSize: '3rem',
                 marginBottom: '2rem'
             }}>
-                {isPass ? 'STAGE CLEAR!' : 'GAME OVER'}
-            </h2>
+                {message}
+            </h1>
 
             <PixelContainer title="RESULTS" className="stagger-2">
                 <div style={{ fontSize: '1.2rem', margin: '20px 0', lineHeight: 2 }}>
-                    <p>SCORE: <span style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>{score}/{totalQuestions}</span></p>
+                    <p>SCORE: <span style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>{score}/{total}</span></p>
+                    <p>ACCURACY: <span style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>{percentage}%</span></p>
 
                     {!isSubmitted ? (
                         <div style={{ marginTop: '20px', borderTop: '2px dashed var(--border-color)', paddingTop: '20px' }}>
@@ -69,38 +75,33 @@ export const ResultView: React.FC<ResultViewProps> = ({
                                     fontFamily: 'var(--font-heading)',
                                     textAlign: 'center',
                                     textTransform: 'uppercase',
-                                    outline: 'none'
+                                    outline: 'none',
+                                    marginBottom: '20px'
                                 }}
                             />
                             <PixelButton
+                                variant="success"
                                 onClick={handleSubmit}
                                 disabled={!name.trim() || isSubmitting}
-                                variant="success"
-                                style={{ width: '100%', marginTop: '1rem' }}
                             >
-                                {isSubmitting ? 'SAVING...' : 'SUBMIT TO ARENA'}
+                                {isSubmitting ? 'SUBMITTING...' : 'SUBMIT SCORE'}
                             </PixelButton>
                         </div>
                     ) : (
-                        <div style={{ marginTop: '20px', borderTop: '2px dashed var(--border-color)', paddingTop: '20px' }}>
-                            <p style={{ color: 'var(--success-color)' }}>RANKED SUCCESSFULLY!</p>
-                            <PixelButton
-                                onClick={onViewLeaderboard}
-                                variant="primary"
-                                style={{ width: '100%', marginTop: '0.5rem' }}
-                            >
-                                VIEW HALL OF FAME
-                            </PixelButton>
+                        <div style={{ marginTop: '20px', color: 'var(--success-color)' }}>
+                            <p>SCORE SUBMITTED!</p>
                         </div>
                     )}
                 </div>
 
-                <PixelButton
-                    onClick={onRetry}
-                    style={{ width: '100%', marginTop: '1rem' }}
-                >
-                    PLAY AGAIN
-                </PixelButton>
+                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '20px' }}>
+                    <PixelButton variant="primary" onClick={onRetry}>
+                        TRY AGAIN
+                    </PixelButton>
+                    <PixelButton variant="secondary" onClick={onViewLeaderboard}>
+                        LEADERBOARD
+                    </PixelButton>
+                </div>
             </PixelContainer>
         </div>
     );

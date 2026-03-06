@@ -6,6 +6,8 @@ import { PixelParticles } from '../shared/components/PixelParticles';
 import { Question } from '../shared/services/api';
 import { useAudio } from '../shared/contexts/AudioContext';
 
+import { checkAnswer } from '../domain/quiz/quizDomain';
+
 interface GameViewProps {
     questions: Question[];
     onGameEnd: (score: number) => void;
@@ -44,7 +46,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
         setSelectedAnswer(key);
         setIsAnimating(true);
 
-        const isCorrect = key === currentQuestion.answer;
+        const isCorrect = checkAnswer(key, currentQuestion.answer);
         if (isCorrect) {
             playCorrect();
             setScore(prev => prev + 1);
