@@ -5,7 +5,7 @@ This document provides a high-level, visual overview of the game's new "Vertical
 ## 1. The Big Picture: Feature Pillars
 Our architecture is now organized into four independent "Islands" or "Pillars." This means a change in one area (like changing a sound effect) will never accidentally break another area (like logic for calculating scores).
 
-![Architecture Infographic](file:///Users/ganggang.yu/.gemini/antigravity/brain/c7b8fb93-2360-4a2c-9608-4da309d5cbc6/pixel_game_architecture_infographic_1772766382420.png)
+![Architecture Infographic](../assets/vsa_refactoring_visual.png)
 
 ### 🛡️ Authentication Gate (Gatekeeper)
 Handles player identity and security. It ensures every score submitted is authentic and linked to a valid player session.

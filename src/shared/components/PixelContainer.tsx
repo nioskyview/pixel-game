@@ -5,13 +5,15 @@ interface PixelContainerProps {
     children: React.ReactNode;
     className?: string;
     variant?: 'default' | 'glass';
+    style?: React.CSSProperties;
 }
 
 export const PixelContainer: React.FC<PixelContainerProps> = ({
     title,
     children,
     className = "",
-    variant = 'default'
+    variant = 'default',
+    style = {}
 }) => {
     const isGlass = variant === 'glass';
 
@@ -31,7 +33,8 @@ export const PixelContainer: React.FC<PixelContainerProps> = ({
                 boxShadow: 'var(--pixel-shadow)',
                 backgroundColor: 'var(--card-bg)',
                 border: '2px solid var(--border-color)',
-            })
+            }),
+            ...style
         }}>
             {isGlass && <div className="glass-edge-glow"></div>}
             {title && (

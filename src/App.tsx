@@ -6,6 +6,8 @@ import { ResultView } from './features/quiz/ResultView';
 import { LeaderboardView } from './features/quiz/LeaderboardView';
 import './App.css';
 
+import { ArcadeCabinet } from './shared/components/ArcadeCabinet';
+
 function App() {
   const {
     state,
@@ -63,12 +65,14 @@ function App() {
 
   return (
     <AudioProvider>
-      <div className="crt-overlay"></div>
       <div className="app-wrapper">
         <AudioToggle />
-        <div className="app-container">
-          {renderView()}
-        </div>
+        <ArcadeCabinet>
+          <div className="crt-overlay" style={{ position: 'absolute', pointerEvents: 'none' }}></div>
+          <div className="app-container">
+            {renderView()}
+          </div>
+        </ArcadeCabinet>
       </div>
     </AudioProvider>
   );
