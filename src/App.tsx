@@ -1,6 +1,5 @@
 import { useGameState } from './shared/hooks/useGameState';
-import { AudioProvider } from './shared/contexts/AudioContext';
-import { AudioToggle } from './shared/components/AudioToggle';
+import { AudioProvider, AudioToggle } from './features/audio/AudioManager';
 import { LoginView } from './features/auth/LoginView';
 import { GameView } from './features/quiz/GameView';
 import { ResultView } from './features/quiz/ResultView';
