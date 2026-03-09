@@ -29,6 +29,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
     const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
     const { playCorrect, playWrong } = useAudio();
 
+    // eslint-disable-next-line security/detect-object-injection
     const currentQuestion = questions[currentIndex];
 
     const nextQuestion = useCallback(() => {
@@ -142,6 +143,12 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
         return 'primary';
     };
 
+    const getTimerColor = (time: number) => {
+        if (time > 10) return "#00f3ff";
+        if (time > 5) return "#fbbf24";
+        return "#ef4444";
+    };
+
     const shouldShake = isAnimating && (selectedAnswer !== currentQuestion.answer || !selectedAnswer);
 
     return (
@@ -191,7 +198,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
                                     <circle cx="35" cy="35" r="30" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(0, 243, 255, 0.2)" strokeWidth="4" />
                                     <circle
                                         cx="35" cy="35" r="30" fill="none"
-                                        stroke={timeLeft > 10 ? "#00f3ff" : timeLeft > 5 ? "#fbbf24" : "#ef4444"}
+                                        stroke={getTimerColor(timeLeft)}
                                         strokeWidth="5"
                                         strokeDasharray="188.4"
                                         strokeDashoffset={188.4 - (188.4 * timeLeft) / 20}
@@ -203,7 +210,7 @@ export const GameView: React.FC<GameViewProps> = ({ questions, onGameEnd }) => {
                                         x="50%" y="50%"
                                         dominantBaseline="middle"
                                         textAnchor="middle"
-                                        fill={timeLeft > 10 ? "#00f3ff" : timeLeft > 5 ? "#fbbf24" : "#ef4444"}
+                                        fill={getTimerColor(timeLeft)}
                                         style={{ fontFamily: "'Press Start 2P'", fontSize: '10px', textShadow: '0 0 5px currentColor' }}
                                     >
                                         {timeLeft}
